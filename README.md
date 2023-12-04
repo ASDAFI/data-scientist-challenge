@@ -4,8 +4,10 @@
 
 Given some data points based on their latitudes and longitudes, the objective is to categorize the points into some clusters with given sizes. More formally, the following optimization problem is to be solved,
 
-$$min_{a_{ij},{\mu_j}}\sum_{j=1}^{k}\sum_{i=1}^{m}a_{ij}\Vert x_i-\mu_j\Vert_2^{2},\\
-s.t. \sum_{i=1}^{m}a_{ij}=S(j) \quad \forall j\in\{1,\dots,k\}$$ 
+$$\begin{align*} 
+&min_{a_{ij},{\mu_j}}\sum_{j=1}^{k}\sum_{i=1}^{m}a_{ij}\Vert x_i-\mu_j\Vert_2^{2},\\
+&s.t. \sum_{i=1}^{m}a_{ij}=S(j) \quad \forall j\in\{1,\dots,k\}
+\end{align*}$$
 
 where $\mu_j$ in the centroid of cluster $j$, as,
 
