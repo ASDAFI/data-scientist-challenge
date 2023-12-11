@@ -21,5 +21,7 @@ def solver(points_path, cluster_sizes_path, out_path, be_fast=False):
     r = Renderer()
     r.render(p, out_path)
     centroids = p.get_centroids(p.positions, p.cluster_sizes, p.assignments)
-    print("Final real error", p.get_error(p.positions, centroids, p.assignments))
+    print("Final Squared error", p.get_squared_error(p.positions, centroids, p.assignments))
+    print("Scaled ABS error", p.error)
+
     return p.assignments
