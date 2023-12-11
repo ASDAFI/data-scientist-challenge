@@ -75,6 +75,16 @@ class ClusteringProblem:
         return error
 
     @staticmethod
+    def get_squared_error(positions: np.ndarray, centroids: np.ndarray,
+                  assignments: np.ndarray) -> np.float64:
+        error: np.float64 = np.float64(0)
+        for i in range(positions.shape[0]):
+            difference: np.ndarray = np.abs(positions[i] - centroids[assignments[i]])
+            diff_square = difference * difference
+            error += diff_square @ diff_square.T
+        return error
+
+    @staticmethod
     def is_violating_clustering_constraints(assignments_table: np.ndarray):
         dp: np.ndarray = np.zeros((assignments_table[0],), dtype=np.bool)
         for i in range(assignments_table.shape[0]):
@@ -102,6 +112,11 @@ class ClusteringProblem:
         centroids: np.ndarray = self.get_centroids_from_assignment_table(self.scaled_positions, self.cluster_sizes,
                                                                          self.assignments_table) * 10000
         return self.get_error_from_assignment_table(self.scaled_positions, centroids, self.assignments_table)
+
+    @property
+    def squared_error(self):
+        centroids: np.ndarray = self.get_centroids(self.scaled_positions, self.cluster_sizes, self.assignments)
+        return self.get_squared_error(self.scaled_positions, centroids, self.assignments)
 
     def init_feasible_random_answer(self):
         shuffled_order: List[int] = list(range(self.positions_count))
