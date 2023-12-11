@@ -13,6 +13,7 @@ def solver(points_path, cluster_sizes_path, out_path, be_fast=True):
     if not be_fast:
         sa = SimulatedAnnealing(p)
         sa.optimize()
+        p.assignments = sa.best_assignment
 
         ls = LocalSearch(p)
         ls.optimize(20)
