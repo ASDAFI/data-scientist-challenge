@@ -1,10 +1,4 @@
-from problem import *
-from view import Renderer
+from solver import solver
 
-points = get_points_from_file("input/points.csv")
-cluster_sizes = get_cluster_sizes("input/cluster_sizes.npy")
-
-p = ClusteringProblem(points, cluster_sizes)
-p.init_feasible_random_answer()
-r = Renderer()
-r.render(p, "out.html")
+if __name__ == "__main__":
+    solver("input/cluster_sizes.npy", "input/points.csv", "out.html")
