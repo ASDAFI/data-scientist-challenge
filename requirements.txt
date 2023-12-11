@@ -1,0 +1,5 @@
+folium~=0.15.1
+numpy~=1.24.3
+pillow~=9.4.0
+pandas~=1.5.3
+scikit-learn~=1.2.2
