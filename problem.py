@@ -2,6 +2,7 @@ import random
 from typing import List
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
 
 def get_points_from_file(path: str) -> np.ndarray:
@@ -24,10 +25,10 @@ def get_cluster_sizes(path: str) -> np.ndarray:
     return cluster_sizes
 
 
-
 class ClusteringProblem:
     def __init__(self, positions: np.ndarray, cluster_sizes: np.ndarray):
         self.positions: np.ndarray = positions.copy()
+        self.scaled_positions: np.ndarray = MinMaxScaler().fit_transform(positions)
         self.cluster_sizes: np.ndarray = cluster_sizes.copy()
         self.clusters_count: int = self.cluster_sizes.shape[0]
         self.positions_count: int = self.positions.shape[0]
@@ -57,7 +58,7 @@ class ClusteringProblem:
 
     @staticmethod
     def get_centroids(positions: np.ndarray, cluster_sizes: np.ndarray, assignments: np.ndarray) -> np.ndarray:
-        centroids: np.ndarray = np.zeros((cluster_sizes, 2), dtype=np.float64)
+        centroids: np.ndarray = np.zeros((cluster_sizes.shape[0], 2), dtype=np.float64)
         for i in range(assignments.shape[0]):
             centroids[assignments[i]] += positions[i]
         for i in range(centroids.shape[0]):
@@ -69,8 +70,8 @@ class ClusteringProblem:
                   assignments: np.ndarray) -> np.float64:
         error: np.float64 = np.float64(0)
         for i in range(positions.shape[0]):
-            difference: np.ndarray = positions[i] - centroids[assignments[i]]
-            error += difference @ difference.transpose()
+            difference: np.ndarray = np.abs(positions[i] - centroids[assignments[i]])
+            error += difference[0] + difference[1]
         return error
 
     @staticmethod
@@ -91,6 +92,16 @@ class ClusteringProblem:
         for assignment in assignments:
             dp[assignment] -= 1
         return np.sum(np.abs(dp)) * penalty
+
+    @property
+    def error(self) -> np.float64:
+        if self.assignments_table is None:
+            centroids: np.ndarray = self.get_centroids(self.scaled_positions, self.cluster_sizes, self.assignments)
+            return self.get_error(self.scaled_positions, centroids, self.assignments)
+
+        centroids: np.ndarray = self.get_centroids_from_assignment_table(self.scaled_positions, self.cluster_sizes,
+                                                                         self.assignments_table) * 10000
+        return self.get_error_from_assignment_table(self.scaled_positions, centroids, self.assignments_table)
 
     def init_feasible_random_answer(self):
         shuffled_order: List[int] = list(range(self.positions_count))
