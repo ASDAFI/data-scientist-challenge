@@ -3,7 +3,7 @@ from view import Renderer
 from algorithms import SimulatedAnnealing, LocalSearch, solve_greedy
 
 
-def solver(points_path, cluster_sizes_path, out_path, be_fast=False):
+def solver(points_path, cluster_sizes_path, out_path, be_fast=True):
     # todo: Refactor Cause it is violationg SRP
     points = get_points_from_file(cluster_sizes_path)
     cluster_sizes = get_cluster_sizes(points_path)
